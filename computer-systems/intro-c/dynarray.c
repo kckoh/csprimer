@@ -6,7 +6,6 @@
 
 typedef struct DA {
   // TODO define our struct
-  
 } DA;
 
 
