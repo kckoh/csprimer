@@ -3,14 +3,30 @@
 
 #define STARTING_BUCKETS 8
 #define MAX_KEY_SIZE 8
+
+typedef struct Node{
+  char* key;
+  void *val;
+  struct Node *next;
+} Node;
+
 typedef struct Hashmap {
-
-
+Node *buckets;
+int size;
 } Hashmap;
 
-Hashmap * Hashmap_free(){
-  
+Hashmap *Hashmap_new(){
+
 }
+
+unsigned int hash(const char *s){
+  unsigned int h = 8351;
+  char ch;
+  while ((ch = *s++))
+    h = (h << 5) + h + ch;
+  return h;
+}
+
 
 void *Hashmap_get(Hashmap *h, char *key){
 
