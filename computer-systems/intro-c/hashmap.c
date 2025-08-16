@@ -26,11 +26,13 @@ typedef struct Hashmap {
 void **key_buckets;
 void **val_buckets;
 int bucket_size;
+int length;
 } Hashmap;
 
 Hashmap *Hashmap_new(){
   Hashmap *h = malloc(sizeof(Hashmap));
   h->bucket_size = STARTING_BUCKETS;
+  h->length = 0;
   h->key_buckets = malloc(h->bucket_size * sizeof(void *));
   h->val_buckets = malloc(h->bucket_size * sizeof(void *));
   return h;
@@ -48,23 +50,85 @@ unsigned int simple_hash_index(const char *str, int bucket_size) {
 
 
 void Hashmap_set(Hashmap * h, char *key, void * val_ptr){
-  // hash
-  unsigned int hash = simple_hash(key);
-  // get the index
-  unsigned int index = hash % h->bucket_size;
-  h->key_buckets[index] = key;
-  h->val_buckets[index] = val_ptr;
+  // // hash
+  // unsigned int index = simple_hash_index(key,h->bucket_size);
+  // // if there is something in the index
+  // printf("check what's in there%p\n",h->key_buckets[index]);
+  // if(h->key_buckets[index] == NULL || h->key_buckets[index] == key){
+  //   h->key_buckets[index] = key;
+  //   h->val_buckets[index] = val_ptr;
+  //   h->length++;
+  //   return;
+  // }
+
+  // // handle collision here 
+  // // bucket is full
+  // if(h->bucket_size == h->length){
+  // }
+  // // bucket is not full and coliision
+  // while (h->key_buckets[++index%h->bucket_size]){
+  //   h->key_buckets[index] = key;
+  //   h->val_buckets[index] = val_ptr;
+  //   h->length++;
+  // }
+
+size_t n = h->bucket_size;
+unsigned int i = simple_hash_index(key,h->bucket_size);
+size_t start = i;
+// while loop
+for (;;) {
+    if (h->key_buckets[i] == NULL) {
+        h->key_buckets[i] = key;
+        h->val_buckets[i] = val_ptr;
+        h->length++;
+        return;
+    }
+    if (h->key_buckets[i] == key) {
+        h->val_buckets[i] = val_ptr;  // update
+        return;
+    }
+    i = (i + 1) % n;
+    if (i == start) { 
+      // ht_resize(h, n * 2); /* then retry */ 
+      // resize
+      h->bucket_size = h->bucket_size * 2;
+      h->key_buckets = realloc(h->key_buckets, h->bucket_size * sizeof(void *));
+      h->val_buckets = realloc(h->key_buckets, h->bucket_size * sizeof(void *));
+    }
+}
 
 }
 
-void Hashmap_get (Hashmap *h, char *key) {
-  unsigned int hash = simple_hash(key);
-  
-  if (h->key_buckets[index])
+void* Hashmap_get (Hashmap *h, char *key) {
+  unsigned int i = simple_hash_index(key, h->bucket_size);
+  size_t n = h->bucket_size;
+  size_t start = i;
+  // handle collision here
+
+  for (;;) {
+    if (h->key_buckets[i] == NULL) {
+        return;
+    }
+    if (h->key_buckets[i] == key) {
+        return h->val_buckets[i];
+    }
+    i = (i + 1) % n;
+    // nothing is found return null
+    if (i == start) { 
+      return;
+    }
+}
 
 }
 
 void Hashmap_delete(Hashmap *h, const char *keys){
+
+  unsigned int index = simple_hash_index(keys,h->bucket_size);
+  if(h->key_buckets[index] == keys){
+    h->key_buckets[index] = NULL;
+    h->val_buckets[index] = NULL;
+    h->length --;
+  }
 
 }
 
