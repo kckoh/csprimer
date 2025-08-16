@@ -23,13 +23,19 @@ int main() {
 
     // use struct
     printf("hello world\n");
-    struct rectangle {
-        int width;
-        int height;
+    // struct rectangle {
+    //     int width;
+    //     int height;
+    // };
+    // struct rectangle r = { 1, 2 };
+    // printf(r.height); 
+
+    struct DA {
+        int *arr;
+        int size;
     };
-    struct rectangle r = { 1, 2 };
-    printf(r.height); 
-    
+    struct DA test = {malloc(8 * sizeof(int)), sizeof(int)};
+    printf("%p\n",&test);
     
     return 0;
 }
