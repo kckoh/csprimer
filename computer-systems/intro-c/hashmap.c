@@ -1,9 +1,10 @@
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define STARTING_BUCKETS 8
 #define MAX_KEY_SIZE 8
-
+#define HASH unsigned int
 typedef struct Node{
   char* key;
   void *val;
@@ -11,15 +12,18 @@ typedef struct Node{
 } Node;
 
 typedef struct Hashmap {
-Node *buckets;
-int size;
+  Node **buckets;
+  int num_buckets;
 } Hashmap;
 
 Hashmap *Hashmap_new(){
-
+  Hashmap *h = malloc(sizeof(Hashmap));
+  h->buckets = calloc(STARTING_BUCKETS, sizeof(Node));
+  h->num_buckets = STARTING_BUCKETS;
+  return h;
 }
 
-unsigned int hash(const char *s){
+HASH simple_hash(const char *s){
   unsigned int h = 8351;
   char ch;
   while ((ch = *s++))
@@ -33,6 +37,26 @@ void *Hashmap_get(Hashmap *h, char *key){
 }
 
 void Hashmap_set(Hashmap *h, char *key, void *val){
+  // get the hash
+  HASH hashed =  simple_hash(key);
+  // get the index
+  int i = hashed % h->num_buckets;
+  
+  Node *n = h->buckets[i];
+  while (n != NULL) {
+    if (n->hash == hash && strncmp(key, n->key, MAX_KEY_SIZE) == 0) {
+      n->val = value;
+      return;
+    }
+    n = n->next;
+  }
+  n = malloc(sizeof(Node));
+  n->key = strdup(key);
+  n->val = value;
+  n->hash = hash;
+  n->next = h->buckets[i];
+  h->buckets[i] = n;
+
 
 }
 
