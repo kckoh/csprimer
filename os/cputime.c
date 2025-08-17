@@ -6,6 +6,13 @@
 #define NUM_MALLOCS 100000
 #define MALLOC_SIZE 1000
 
+
+/*
+1. Research needed syscals and lib functions
+2. print pid getpid #include <unistd.h>
+3. determine elasped real time 
+4. determine elasped time on CPU both user and system
+*/
 // TODO define this struct
 struct profile_times {
 };
