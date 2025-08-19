@@ -1,18 +1,20 @@
 global _start
 
 section .data
-    msg db 'Hello, Assembly!', 0x0a
-    len_msg equ $ - msg
+    hello db 'Hello World from Assembly!', 0x0a
+    len_hello equ $ - hello
 
 section .text
 _start:
-    ; write syscall to output
+    ; order of the register args
+    ; rax, rdi, rsi, rdx
+    ; syscall for write
     mov rax, 0x01
     mov rdi, 1
-    mov rsi, msg
-    mov rdx, len_msg
+    mov rsi, hello
+    mov rdx, len_hello
     syscall
-    ; exit code with 0
+    ; exit syscall
     mov rax, 0x3c
     mov rdi, 0
     syscall
