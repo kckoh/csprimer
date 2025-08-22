@@ -6,3 +6,5 @@ Capslock & h::Send {Left}
 Capslock & j::Send {Down}
 Capslock & k::Send {Up}
 Capslock & l::Send {Right}
+
+
